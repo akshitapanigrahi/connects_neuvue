@@ -1,0 +1,5 @@
+datajoint
+networkx
+numpy
+pandas
+bz2file
