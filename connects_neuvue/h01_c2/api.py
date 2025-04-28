@@ -2,8 +2,10 @@ import datajoint as dj
 from ..utils import (
     file_utils as fileu,
     nx_graph_utils as nxgu,
-    dj_utils as dju
+    dj_utils as dju,
+    split_suggestion_utils as ssu,
 )
+
 
 class API:
     def __init__(
@@ -47,4 +49,14 @@ class API:
         if table is None:
             table = self.autoproof_table
         return dju.df_from_table(table)
+    
+    
+    def red_blue_split_df_from_segment_id(self,segment_id,split_index = 0,return_df = True):
+        
+        key = dict(segment_id=segment_id,split_index = split_index)
+        red_blue_suggestions = (self.autoproof_obj_table & key).fetch1("red_blue_suggestions")
+        if red_blue_suggestions is None:
+            print(f"the red_blue_suggestions saved were None")
+            return None
+        return ssu.red_blue_suggestion_dicts(red_blue_suggestions,return_df=return_df)
     
