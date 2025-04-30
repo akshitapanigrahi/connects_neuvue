@@ -174,3 +174,5 @@ cython_debug/
 .pypirc
 
 *.pbz2
+*.npz
+*.h5

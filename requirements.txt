@@ -3,3 +3,4 @@ networkx
 numpy
 pandas
 bz2file
+trimesh

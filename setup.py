@@ -13,7 +13,8 @@ setup(
     install_requires=parse_requirements('requirements.txt'),
     extras_require={
         'morph_tools': [
-            'neuron_morphology_tools @ git+https://github.com/reimerlab/neuron_morphology_tools.git'
+            'neuron_morphology_tools @ git+https://github.com/reimerlab/neuron_morphology_tools.git',
+            'datasci_stdlib_tools @ git+https://github.com/reimerlab/datasci_tools.git',
         ]
     },
     author='Brendan Celii',
