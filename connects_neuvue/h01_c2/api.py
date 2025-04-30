@@ -24,11 +24,17 @@ class API:
     def __init__(
         self,
         secret_password = None,
+        host = None,
         secret_dict=None,
         **kwargs):
         
         if secret_dict is None:
             secret_dict = self.secret_dict_from_password(secret_password)
+            
+        if host is None:
+            host = "neurd-datajoint.cluster-cjc6cqmcqirl.us-east-1.rds.amazonaws.com"
+            
+        dj.config['database.host'] = host
         
         dj.config['database.password'] = secret_dict['password']
         dj.config['database.username'] = secret_dict['username']

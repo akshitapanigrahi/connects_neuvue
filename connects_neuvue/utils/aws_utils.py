@@ -38,7 +38,7 @@ def get_secret():
     {aws_credentials_instruction}
     """
     if not check_for_aws_credentials():
-        raise FileNotFoundError("Need to first create aws credentials file \n{aws_credentials_instruction} ")
+        raise FileNotFoundError(f"Need to first create aws credentials file \n{aws_credentials_instruction} ")
 
     secret_name = "rds!cluster-fbdb8fcc-f745-4361-b3ba-cf5f8349bc9a"
     region_name = "us-east-1"
