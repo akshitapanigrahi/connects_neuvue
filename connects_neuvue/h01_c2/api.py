@@ -38,6 +38,7 @@ class API:
         
         dj.config['database.password'] = secret_dict['password']
         dj.config['database.username'] = secret_dict['username']
+        dj.config['database.user'] = secret_dict['username']
         dj.conn()
         
         from .schema import (
