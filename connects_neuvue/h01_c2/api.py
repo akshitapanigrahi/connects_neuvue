@@ -11,6 +11,8 @@ from ..utils import (
 )
 import trimesh
 import numpy as np
+from tqdm import tqdm
+import pandas as pd
 
 # -- trying an import of datasci_tools to be used for visualizations
 try:
@@ -648,4 +650,61 @@ class API:
             print(f"the red_blue_suggestions saved were None")
             return None
         return ssu.red_blue_suggestion_dicts(red_blue_suggestions,return_df=return_df,**key)
+    
+    
+
+    def red_blue_df(
+        self,
+        verbose = False,
+        return_segment_error_df = False,
+        return_error_df = False,
+        **kwargs):
+        """
+        Purpose: download the red_blue suggestion splits dataframe
+        for the entire database
+        """
+        (
+            segment_ids,
+            split_indexes,
+            red_blue_suggestions
+        ) = self.autoproof_obj_table.fetch(
+            "segment_id",
+            "split_index",
+            "red_blue_suggestions"
+        )
+
+
+        
+        total_dicts = []
+        for idx,(segment_id,split_index,rb) in tqdm(enumerate(zip(
+            segment_ids,
+            split_indexes,
+            red_blue_suggestions))):
+        
+            rb_dicts = ssu.red_blue_suggestion_dicts(
+                segment_id = segment_id,
+                split_index = split_index,
+                red_blue_suggestions = rb, 
+                include_downstream_stats = True,
+                include_parent_stats = True,
+            )
+        
+            if verbose:
+                print(f"{segment_id}_{split_index}: {len(rb_dicts)} split edits")
+            
+            total_dicts+=rb_dicts
+
+        rb_df = pd.DataFrame.from_records(total_dicts)
+
+        if return_segment_error_df or return_error_df:
+            return_value = [rb_df]
+        else:
+            return rb_df
+            
+        if return_segment_error_df:
+            return_value.append(ssu.segment_error_type_red_blue_df_from_red_blue_df(rb_df))
+        if return_error_df:
+            return_value.append(ssu.error_type_red_blue_df_from_red_blue_df(rb_df))
+
+        return return_value
     
