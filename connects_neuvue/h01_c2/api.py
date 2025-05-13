@@ -46,7 +46,8 @@ class API:
         from .schema import (
             AutoProofreadNeuron,
             MeshDecimation,
-            SomaExtraction
+            SomaExtraction,
+            DecompositionCellType
         )
         
         self.soma_table = SomaExtraction.SomaInfo
@@ -54,6 +55,9 @@ class API:
         
         self.autoproof_table = AutoProofreadNeuron
         self.autoproof_obj_table = self.autoproof_table.Obj
+        
+        self.cell_type_table = DecompositionCellType
+        self.cell_type_obj_table = self.cell_type_table.Obj
         
         self.decimated_mesh_obj_table = MeshDecimation.Obj
         
@@ -708,3 +712,71 @@ class API:
 
         return return_value
     
+    # --- working with the neuron graphs
+    
+    def G_axon_from_segment_id(self,segment_id):
+        G_path = (self.cell_type_obj_table & dict(segment_id=segment_id)
+            ).fetch1("neuron_graph_high_fid_axon")
+        
+        G = fu.decompress_pickle(G_path)
+        return G
+    
+    G_cell_type = G_axon_from_segment_id
+    
+    def ml_G_training_labels(self,segment_id,split_index = 0):
+        lb = (self.proofreading_object_table() & dict(segment_id = segment_id,split_index=split_index)
+            ).fetch1("limb_branch_to_cancel")
+        seg_training_data = lb["limb_branch_dict_to_cancel"]
+        return seg_training_data
+    
+    @staticmethod
+    def clean_ml_training_df(df):
+        
+        ml_train_data_to_save = df[["segment_id","split_index","G","training_labels"]].copy()
+        ml_train_data_to_save['cell_type'] = [k["cell_type"] for k in ml_train_data_to_save["training_labels"]]
+
+        keys_to_delete = ["segment_id","cell_type"]
+        ml_train_data_to_save['training_labels'] = ml_train_data_to_save['training_labels'].apply(
+            lambda d: {k: v for k, v in d.items() if k not in keys_to_delete}
+        )
+        
+        return ml_train_data_to_save
+    def ml_training_df(
+        self,
+        keys=None,
+        clean_df = True,
+        ):
+
+        cell_type_restr = ((self.cell_type_obj_table) * self.proofreading_object_table.proj("limb_branch_to_cancel"))
+        
+        if keys is not None:
+            cell_type_restr = cell_type_restr & keys
+        
+        (segment_id,
+        split_index,
+        neuron_graph_high_fid_axon,
+        limb_branch_to_cancel)=cell_type_restr.fetch(
+            "segment_id",
+            "split_index",
+            "neuron_graph_high_fid_axon",
+            "limb_branch_to_cancel"
+        )
+        training_df = pd.DataFrame.from_dict(
+            dict(
+                segment_id=segment_id,
+                split_index=split_index,
+                neuron_graph_high_fid_axon=neuron_graph_high_fid_axon,
+                limb_branch_to_cancel=limb_branch_to_cancel,
+            )
+        )
+
+        Gs = []
+        for G_path in tqdm(training_df["neuron_graph_high_fid_axon"].to_list()):
+            Gs.append(fu.decompress_pickle(G_path))
+        training_df["G"] = Gs
+        
+        if clean_df:
+            training_df = self.clean_ml_training_df(training_df)
+        return training_df
+    
+from ..utils import file_utils as fu

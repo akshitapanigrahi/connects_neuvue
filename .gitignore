@@ -176,3 +176,4 @@ cython_debug/
 *.pbz2
 *.npz
 *.h5
+*.pkl

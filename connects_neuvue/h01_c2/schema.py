@@ -38,6 +38,24 @@ class SomaExtraction(dj.Computed):
         """
 
 @schema
+class DecompositionCellType(dj.Computed):
+    definition="""
+    -> h01.Decomposition
+    split_index: tinyint unsigned  #the index of the neuron object that resulted AFTER THE SPLITTING ALGORITHM
+    ---
+    """
+    
+    class Obj(dj.Part):
+        definition="""
+        ->master
+        ---
+        decomposition                 : <decomposition>                 # in-place path to the hdf5 mesh file
+        neuron_graph                  : <graph>                         # graph 
+        neuron_graph_high_fid_axon    : <graph>                         # graph 
+        """
+
+
+@schema
 class AutoProofreadNeuron(dj.Computed):
     definition='''
     -> h01.DecompositionCellType

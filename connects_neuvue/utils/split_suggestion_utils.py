@@ -199,7 +199,7 @@ def plot_red_blue_split_dict(
     error_skeleton_points_color = error_skeleton_points_color_default,
     plot_skeleton = True,
     verbose = True,
-    metrics_to_print = ("skeletal_length",),
+    metrics_to_print = None,#("skeletal_length",),
     scatter_size = scatter_size_default,
     ):
     
