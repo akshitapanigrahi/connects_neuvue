@@ -113,7 +113,7 @@ class API:
             try:
                 if "_" in seg_id:
                     seg_id,sp_idx = self.segment_id_and_split_index_from_node_name(seg_id)
-            except ValueError:
+            except:
                 pass
             
             seg_ids_final.append(seg_id)
