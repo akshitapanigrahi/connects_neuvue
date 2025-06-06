@@ -90,6 +90,6 @@ class AutoProofreadNeuron(dj.Computed):
         red_blue_suggestions=NULL: longblob
         split_locations=NULL: longblob
         split_locations_before_filter=NULL: longblob
-        neuron_graph=NULL: <graph> #the graph for the 
-        decomposition=NULL: <decomposition>
+        neuron_graph=NULL: <auto_proof_graph_dtype>  #the graph for the 
+        decomposition=NULL: <auto_proof_decomposition_dtype>
         """
