@@ -5,18 +5,35 @@ import h5py
 import trimesh
 from pathlib import Path
 from collections import namedtuple
-import  datasci_tools.system_utils as su 
+import boto3
+#import  datasci_tools.system_utils as su 
 import os
+from ..utils import file_utils as fileu
 
 os.environ['DJ_SUPPORT_ADAPTED_TYPES'] = "TRUE"  
 os.environ['DJ_SUPPORT_FILEPATH_MANAGEMENT'] = "TRUE"
 BUCKET = "neurd-datalake"
 RAW_MESH_LOC = "h01_raw_meshes"
-ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
-SECRET_KEY = os.environ['AWS_SECRET_KEY']
+
+session = boto3.Session()
+credentials = session.get_credentials()
+frozen_credentials = credentials.get_frozen_credentials()
+
+access_key = frozen_credentials.access_key
+secret_key = frozen_credentials.secret_key
+session_token = frozen_credentials.token  # May be None if not using session-based auth
+
+#ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
+#SECRET_KEY = os.environ['AWS_SECRET_KEY']
+
+ACCESS_KEY = access_key
+SECRET_KEY = secret_key
 STAGE = os.path.abspath('./stage')
 
+
 from pathlib import Path
+
+
 class Adapter(dj.AttributeAdapter):
     attribute_type = ''
 
@@ -50,7 +67,7 @@ class PbzPickleAdapter(FilePathAdapter):
     return numpy array'''
     def get(self, filepath):
         filepath = super().get(filepath)
-        return su.decompress_pickle(filepath)
+        return fileu.decompress_pickle(filepath)
     
 def validate_filepath(filepath):
     filepath = Path(filepath)
