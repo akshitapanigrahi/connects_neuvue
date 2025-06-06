@@ -13,11 +13,19 @@ import trimesh
 import numpy as np
 from tqdm import tqdm
 import pandas as pd
-
+from warnings import warn
 # -- trying an import of datasci_tools to be used for visualizations
 try:
     from datasci_tools import ipyvolume_utils as ipvu
-except:
+except ModuleNotFoundError:
+    warn("datasci_tools.ipyvolume_utils not found, some visualizations will not work."
+            "Please install the datasci_tools package to enable visualizations")
+    pass
+try:
+    import neurd.neuron_visualizations as nviz # for visualizations
+except ModuleNotFoundError:
+    warn("neurd.neuron_visualizations not found, some visualizations will not work. "
+            "Please install the neurd package to enable visualizations")
     pass
 
 # -- utilities from other packages --
@@ -61,7 +69,7 @@ class API:
         
         self.decimated_mesh_obj_table = MeshDecimation.Obj
         
-        self.nucleus_id_name = "nucleus_id",
+        self.nucleus_id_name = "nucleus_id"
         self.centroid_name = "centroid"
         
     def secret_dict_from_password(password,username='admin'):
@@ -596,31 +604,7 @@ class API:
             split_index = split_index,
             plot_skeleton=plot_skeleton
         )
-        
-    def fetch_proofread_skeleton(
-        self,
-        segment_id,
-        split_index=0,
-        verbose = False,
-        plot_skeleton = False,
-        **kwargs
-        ):
-        """
-        Ex: 
-        pv.fetch_proofread_skeleton(segment_id,
-                               split_index,
-                               plot_skeleton=True,
-                               original_mesh=original_mesh)
-
-        """
-        return self.fetch_compartment_skeleton("neuron",
-                                            segment_id,
-                                            split_index,
-                                            verbose = verbose,
-                                            plot_skeleton=plot_skeleton,
-                                            **kwargs)
-    
-    
+         
     
     # -- graph fetching --
 

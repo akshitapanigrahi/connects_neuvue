@@ -229,6 +229,25 @@ dj.config['stores'] = {
                 location = 'h01_auto_proof_skeletons',
                 access_key=ACCESS_KEY,
                 secret_key=SECRET_KEY),
+'auto_proof_decomposition': dict(  # s3 storage for decompositions
+               secure = True,
+               stage = STAGE,
+               protocol='s3',
+               endpoint='s3.amazonaws.com',
+               bucket = BUCKET,
+               location = 'h01_auto_proof_decompostion',
+               access_key=ACCESS_KEY,
+               secret_key=SECRET_KEY),
+'auto_proof_graph': dict(  # s3 storage for graph
+                secure = True,
+                stage = STAGE,
+                protocol='s3',
+                endpoint='s3.amazonaws.com',
+                bucket = BUCKET,
+                location = 'h01_auto_proof_graph',
+                access_key=ACCESS_KEY,
+                secret_key=SECRET_KEY),
+
 }
 
 raw_mesh = TrimeshAdapter('filepath@raw_meshes')
@@ -241,4 +260,5 @@ skeletons = PbzPickleAdapter('filepath@skeletons')
 graph = FilePathAdapter("filepath@graph")
 auto_proof_meshes_dtype = PbzPickleAdapter('filepath@auto_proof_meshes')
 auto_proof_skeletons_dtype = PbzPickleAdapter('filepath@auto_proof_skeletons')
-
+auto_proof_graph_dtype = FilePathAdapter("filepath@auto_proof_graph")
+auto_proof_decomposition_dtype = FilePathAdapter('filepath@auto_proof_decomposition')
