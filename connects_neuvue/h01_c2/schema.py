@@ -10,6 +10,8 @@ from .adapters import (
     graph,
     auto_proof_meshes_dtype,
     auto_proof_skeletons_dtype,
+    auto_proof_graph_dtype,
+    auto_proof_decomposition_dtype
 )
 
 h01 = dj.create_virtual_module('h01_process', 'h01_process')
