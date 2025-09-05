@@ -6,4 +6,4 @@ bz2file
 trimesh
 boto3
 h5py
-datasci_stdlib_tools
+pypandoc

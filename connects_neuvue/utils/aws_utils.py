@@ -27,7 +27,7 @@ def check_for_aws_credentials() -> bool:
     return credentials_path.is_file()
 
 
-def get_secret():
+def get_secret() -> dict:
     f"""
     to retrieve the secret dictionary key using your stored credentials
 
